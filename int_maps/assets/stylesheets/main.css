@@ -1,0 +1,29 @@
+body {margin: 0; padding: 0;}
+
+.map {
+    position: relative;
+    text-align: center;
+}
+img {
+    width: 40%;
+    height: 40%;
+}
+
+svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+
+}
+
+.part {
+    opacity: 0.1;
+}
+
+.part:hover {
+    transition: opacity .2s ease;
+    opacity: 0.3;
+    cursor: pointer;
+}
