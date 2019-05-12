@@ -1,0 +1,2 @@
+arttaxi
+-DCATKIN_DEVEL_PREFIX=/home/kuzandro/DuckieTown/gym-duckietown/gym_duckietown/workspace/devel -DCMAKE_INSTALL_PREFIX=/home/kuzandro/DuckieTown/gym-duckietown/gym_duckietown/workspace/install -G Unix Makefiles

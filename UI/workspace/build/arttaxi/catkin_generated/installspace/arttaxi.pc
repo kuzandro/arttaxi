@@ -1,0 +1,8 @@
+prefix=/home/kuzandro/DuckieTown/gym-duckietown/gym_duckietown/workspace/install
+
+Name: arttaxi
+Description: Description of arttaxi
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/kuzandro/DuckieTown/gym-duckietown/gym_duckietown/workspace/install/lib 
+Requires: 
