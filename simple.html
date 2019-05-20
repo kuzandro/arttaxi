@@ -76,20 +76,29 @@
     var image = L.imageOverlay('map.jpg', bounds).addTo(map);
     map.fitBounds(bounds);
     
-    listener.subscribe(function(message) {
-      document.querySelector('.results').innerHTML = 'Сообщение из топика ' + listener.name + '<br>Текущие координы: ' + message.data;
-      console.log('Received message on ' + listener.name + ': ' + message.data);
-      var strX = message.data.substring(4,8);
-      var strY = message.data.substring(14,18);
-      var x = parseFloat(strX);
-      var y = parseFloat(strY); 
-      console.log(String(x) + String(y));
-      
-      var car = L.latLng([ 4.095 - y, x ]);
-      L.marker(car).addTo(map);
+    for(var i = 0; i < 1000; i++){
+      listener.subscribe(function(message) {
+        document.querySelector('.results').innerHTML = 'Сообщение из топика ' + listener.name + '<br>Текущие координы: ' + message.data;
+        console.log('Received message on ' + listener.name + ': ' + message.data);
+        var strX = message.data.substring(4,8);
+        var strY = message.data.substring(14,18);
+        var x = parseFloat(strX);
+        var y = parseFloat(strY); 
+        console.log(String(x) + String(y));
 
-      listener.unsubscribe();
-    });
+
+        var car = L.latLng([ 4.095 - y, x ]);
+        L.marker(car).addTo(map);
+        map.removeLayer(car)
+        
+        listener.unsubscribe();
+        setTimeout(function(){
+          window.location.reload();
+        }, 2000);
+       
+      });
+    }
+    
 
  
 

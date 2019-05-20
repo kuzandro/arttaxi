@@ -40,21 +40,32 @@
 
 import rospy
 from std_msgs.msg import String
+import socket
+
+
 
 def talker():
     pub = rospy.Publisher('chatter', String, queue_size=10)
     rospy.init_node('talker', anonymous=True)
     rate = rospy.Rate(10) # 10hz
     while not rospy.is_shutdown():
-        f = open('../coords.txt', 'r')
-        hello_str = f.readlines()[-1]
-        f.close()
+        #f = open('../coords.txt', 'r')
+        #hello_str = f.readlines()[-1]
+        #f.close()
+        sock = socket.socket()
+        sock.connect(('', 9305))
+        data = sock.recv(16384)
+        hello_str = data.decode("utf-8")
+        sock.close()
         rospy.loginfo(hello_str)
         pub.publish(hello_str)
         rate.sleep()
+        
 
 if __name__ == '__main__':
+    
     try:
         talker()
     except rospy.ROSInterruptException:
         pass
+    conn.close()

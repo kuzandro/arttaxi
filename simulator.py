@@ -17,6 +17,7 @@ class DoneRewardInfo:
 
 import gym
 import yaml
+import socket
 from gym import spaces
 from gym.utils import seeding
 
@@ -115,6 +116,12 @@ def writeToFile(string):
     fileCoords.write(string)
     fileCoords.close()
 
+
+def socksend(string):
+    conn = socket.socket()
+    conn.connect(('', 9304))
+    conn.send(string.encode("utf-8"))
+    conn.close()
 
 class LanePosition(LanePosition0):
 
@@ -1664,8 +1671,8 @@ class Simulator(gym.Env):
         if mode != "free_cam":
             x, y, z = self.cur_pos
             stringg = "x = %.2f, y = %.2f, angle = %d\n" % (x, z, int(self.cur_angle * 180 / math.pi))
-            if stringg != prev:
-                writeToFile(stringg)
+
+            socksend(stringg)
 
             self.text_label.text = "pos: (%.2f, %.2f, %.2f), angle: %d, steps: %d, speed: %.2f m/s" % (
                 x, y, z,
