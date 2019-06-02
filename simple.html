@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
+
+ <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+   integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+   crossorigin=""></script>
+
+<style>
+  #mapid { 
+    height: 819px;
+    width: 936px; 
+    background-color: black;
+  }
+</style>
+
+
+
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+<script type="text/javascript" type="text/javascript">
+
+</script>
+</head>
+
+<body>
+  <h1>Тут отображаются координаты робота</h1>
+  <div class="results"></div>
+
+  <div id="mapid"></div>
+  <script type="text/javascript" type="text/javascript">
+
+  // Connecting to ROS
+  // -----------------
+
+  var ros = new ROSLIB.Ros({
+    url : 'ws://localhost:9090'
+  });
+
+  ros.on('connection', function() {
+    console.log('Connected to websocket server.');
+  });
+
+  ros.on('error', function(error) {
+    console.log('Error connecting to websocket server: ', error);
+  });
+
+  ros.on('close', function() {
+    console.log('Connection to websocket server closed.');
+  });
+
+  // Subscribing to a Topic
+  // ----------------------
+
+    var listener = new ROSLIB.Topic({
+      ros : ros,
+      name : '/chatter',
+      messageType : 'std_msgs/String'
+    });
+
+    var coordsStr = "";
+
+    //mapping
+    var map = L.map('mapid', {
+      crs: L.CRS.Simple,
+      minZoom: -5
+    });
+    var bounds = [[0,0], [4.095,4.68]];
+    var image = L.imageOverlay('map.jpg', bounds).addTo(map);
+    map.fitBounds(bounds);
+    
+    for(var i = 0; i < 1000; i++){
+      listener.subscribe(function(message) {
+        document.querySelector('.results').innerHTML = 'Сообщение из топика ' + listener.name + '<br>Текущие координы: ' + message.data;
+        console.log('Received message on ' + listener.name + ': ' + message.data);
+        var strX = message.data.substring(4,8);
+        var strY = message.data.substring(14,18);
+        var x = parseFloat(strX);
+        var y = parseFloat(strY); 
+        console.log(String(x) + String(y));
+
+
+        var car = L.latLng([ 4.095 - y, x ]);
+        L.marker(car).addTo(map);
+        map.removeLayer(car)
+        
+        listener.unsubscribe();
+        setTimeout(function(){
+          window.location.reload();
+        }, 2000);
+       
+      });
+    }
+    
+
+ 
+
+  </script>
+</body>
+</html>
